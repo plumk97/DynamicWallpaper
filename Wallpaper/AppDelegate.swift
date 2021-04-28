@@ -7,6 +7,15 @@
 
 import Cocoa
 
+enum WallpaperType: Int {
+    case web = 0
+    case image
+    case video
+}
+
+// UserDefaults last record key
+let kLastWallpaper = "kLastWallpaper"
+
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -14,8 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
-        
+
         let mainScreen = NSScreen.main!
         let kCGDesktopWindowLevel = -2147483623
         
@@ -39,17 +47,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.separator())
         menu.addItem(.init(title: "退出", action: #selector(menuItemClick(_:)), keyEquivalent: "q"))
         self.statusItem.menu = menu
+        
+        // -- read last record wallpaper
+        if let obj = UserDefaults.standard.object(forKey: kLastWallpaper) as? [String: Any] {
+            guard let typeIdx = obj["type"] as? Int,
+                  let type = WallpaperType(rawValue: typeIdx),
+                  let urlstr = obj["url"] as? String,
+                  let url = URL(string: urlstr) else {
+                return
+            }
+            self.setWallpaper(url: url, type: type)
+        }
     }
 
     
     @objc func menuItemClick(_ item: NSMenuItem) {
         switch item.title {
         case "本地网页":
-            if let url = self.pickFile() {
-                let c = WebContentView(frame: self.window.frame)
-                c.loadUrl(url)
-                self.window.contentView = c
-            }
+            self.setWallpaper(url: self.pickFile(), type: .web)
             
         case "在线网页":
             if let str = AppleScript.inputUrl(),
@@ -58,23 +73,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     return
                 }
                 
-                let c = WebContentView(frame: self.window.frame)
-                c.loadUrl(url)
-                self.window.contentView = c
+                self.setWallpaper(url: url, type: .web)
             }
             
         case "视频":
-            if let url = self.pickFile() {
-                let c = VideoContentView(frame: self.window.frame)
-                c.loadUrl(url)
-                self.window.contentView = c
-            }
+            self.setWallpaper(url: self.pickFile(), type: .video)
+            
         case "图片":
-            if let url = self.pickFile() {
-                let c = ImageContentView(frame: self.window.frame)
-                c.loadUrl(url)
-                self.window.contentView = c
-            }
+            self.setWallpaper(url: self.pickFile(), type: .image)
+
         case "退出":
             NSApp.terminate(nil)
         default:
@@ -91,6 +98,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return op.urls.first
         }
         return nil
+    }
+    
+    func setWallpaper(url: URL?, type: WallpaperType) {
+        guard let url = url else {
+            return
+        }
+        
+        var contentView: ContentView!
+        switch type {
+        case .web:
+            contentView = WebContentView(frame: self.window.frame)
+        case .video:
+            contentView = VideoContentView(frame: self.window.frame)
+        case .image:
+            contentView = ImageContentView(frame: self.window.frame)
+        }
+        contentView.loadUrl(url)
+        self.window.contentView = contentView
+        
+        // - save record
+        UserDefaults.standard.setValue(["url": url.absoluteString, "type": type.rawValue], forKey: kLastWallpaper)
+        UserDefaults.standard.synchronize()
     }
     
 }
