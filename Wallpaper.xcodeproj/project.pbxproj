@@ -7,19 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		98A9A5C7263AF91400460F7C /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C3263AF91400460F7C /* ImageContentView.swift */; };
+		98A9A5C8263AF91400460F7C /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C4263AF91400460F7C /* VideoContentView.swift */; };
+		98A9A5C9263AF91400460F7C /* WebContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C5263AF91400460F7C /* WebContentView.swift */; };
+		98A9A5CA263AF91400460F7C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C6263AF91400460F7C /* ContentView.swift */; };
+		98A9A5CE263AF94300460F7C /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5CD263AF94300460F7C /* WindowController.swift */; };
+		98A9A5D4263AF97800460F7C /* TextInputWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5D2263AF97800460F7C /* TextInputWindowController.swift */; };
+		98A9A5D5263AF97800460F7C /* TextInputWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 98A9A5D3263AF97800460F7C /* TextInputWindowController.xib */; };
+		98A9A5E0263B009300460F7C /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5DF263B009300460F7C /* TextField.swift */; };
 		FE6FE4012636A67A00E9A21F /* inject.js in Resources */ = {isa = PBXBuildFile; fileRef = FE6FE4002636A67A00E9A21F /* inject.js */; };
 		FE94825A26357645003FD3B3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE94825926357645003FD3B3 /* AppDelegate.swift */; };
 		FE94825E26357647003FD3B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FE94825D26357647003FD3B3 /* Assets.xcassets */; };
 		FE948290263577A5003FD3B3 /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE94828F263577A5003FD3B3 /* Application.swift */; };
-		FE94829526357843003FD3B3 /* WebContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE94829426357843003FD3B3 /* WebContentView.swift */; };
 		FE94829926357A55003FD3B3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE94829826357A55003FD3B3 /* WebKit.framework */; };
-		FEB4807D2636607B005009F4 /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB4807C2636607B005009F4 /* ImageContentView.swift */; };
-		FEB4808126366216005009F4 /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB4808026366216005009F4 /* VideoContentView.swift */; };
-		FEB4808426366C8A005009F4 /* AppleScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB4808326366C8A005009F4 /* AppleScript.swift */; };
-		FEB4808726366F54005009F4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB4808626366F54005009F4 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		98A9A5C3263AF91400460F7C /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
+		98A9A5C4263AF91400460F7C /* VideoContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
+		98A9A5C5263AF91400460F7C /* WebContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebContentView.swift; sourceTree = "<group>"; };
+		98A9A5C6263AF91400460F7C /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		98A9A5CD263AF94300460F7C /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		98A9A5D2263AF97800460F7C /* TextInputWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputWindowController.swift; sourceTree = "<group>"; };
+		98A9A5D3263AF97800460F7C /* TextInputWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextInputWindowController.xib; sourceTree = "<group>"; };
+		98A9A5DF263B009300460F7C /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		FE6FE4002636A67A00E9A21F /* inject.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = inject.js; sourceTree = "<group>"; };
 		FE94825626357645003FD3B3 /* Wallpaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE94825926357645003FD3B3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -27,12 +38,7 @@
 		FE94826226357647003FD3B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FE94826326357647003FD3B3 /* Wallpaper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wallpaper.entitlements; sourceTree = "<group>"; };
 		FE94828F263577A5003FD3B3 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
-		FE94829426357843003FD3B3 /* WebContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebContentView.swift; sourceTree = "<group>"; };
 		FE94829826357A55003FD3B3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		FEB4807C2636607B005009F4 /* ImageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
-		FEB4808026366216005009F4 /* VideoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
-		FEB4808326366C8A005009F4 /* AppleScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleScript.swift; sourceTree = "<group>"; };
-		FEB4808626366F54005009F4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +53,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		98A9A5C2263AF91400460F7C /* ContentView */ = {
+			isa = PBXGroup;
+			children = (
+				98A9A5C6263AF91400460F7C /* ContentView.swift */,
+				98A9A5C3263AF91400460F7C /* ImageContentView.swift */,
+				98A9A5C4263AF91400460F7C /* VideoContentView.swift */,
+				98A9A5C5263AF91400460F7C /* WebContentView.swift */,
+			);
+			path = ContentView;
+			sourceTree = "<group>";
+		};
+		98A9A5CC263AF93400460F7C /* WindowController */ = {
+			isa = PBXGroup;
+			children = (
+				98A9A5CD263AF94300460F7C /* WindowController.swift */,
+				98A9A5D2263AF97800460F7C /* TextInputWindowController.swift */,
+				98A9A5D3263AF97800460F7C /* TextInputWindowController.xib */,
+			);
+			path = WindowController;
+			sourceTree = "<group>";
+		};
+		98A9A5DE263B008600460F7C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				98A9A5DF263B009300460F7C /* TextField.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		FE94824D26357645003FD3B3 = {
 			isa = PBXGroup;
 			children = (
@@ -69,11 +104,9 @@
 			children = (
 				FE94828F263577A5003FD3B3 /* Application.swift */,
 				FE94825926357645003FD3B3 /* AppDelegate.swift */,
-				FEB4808626366F54005009F4 /* ContentView.swift */,
-				FE94829426357843003FD3B3 /* WebContentView.swift */,
-				FEB4807C2636607B005009F4 /* ImageContentView.swift */,
-				FEB4808026366216005009F4 /* VideoContentView.swift */,
-				FEB4808326366C8A005009F4 /* AppleScript.swift */,
+				98A9A5DE263B008600460F7C /* View */,
+				98A9A5CC263AF93400460F7C /* WindowController */,
+				98A9A5C2263AF91400460F7C /* ContentView */,
 				FE94825D26357647003FD3B3 /* Assets.xcassets */,
 				FE94826226357647003FD3B3 /* Info.plist */,
 				FE94826326357647003FD3B3 /* Wallpaper.entitlements */,
@@ -148,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE94825E26357647003FD3B3 /* Assets.xcassets in Resources */,
+				98A9A5D5263AF97800460F7C /* TextInputWindowController.xib in Resources */,
 				FE6FE4012636A67A00E9A21F /* inject.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,12 +194,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				FE948290263577A5003FD3B3 /* Application.swift in Sources */,
-				FE94829526357843003FD3B3 /* WebContentView.swift in Sources */,
-				FEB4808726366F54005009F4 /* ContentView.swift in Sources */,
-				FEB4807D2636607B005009F4 /* ImageContentView.swift in Sources */,
+				98A9A5C9263AF91400460F7C /* WebContentView.swift in Sources */,
+				98A9A5CA263AF91400460F7C /* ContentView.swift in Sources */,
+				98A9A5E0263B009300460F7C /* TextField.swift in Sources */,
+				98A9A5D4263AF97800460F7C /* TextInputWindowController.swift in Sources */,
 				FE94825A26357645003FD3B3 /* AppDelegate.swift in Sources */,
-				FEB4808126366216005009F4 /* VideoContentView.swift in Sources */,
-				FEB4808426366C8A005009F4 /* AppleScript.swift in Sources */,
+				98A9A5C7263AF91400460F7C /* ImageContentView.swift in Sources */,
+				98A9A5CE263AF94300460F7C /* WindowController.swift in Sources */,
+				98A9A5C8263AF91400460F7C /* VideoContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

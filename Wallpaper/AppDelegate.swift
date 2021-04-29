@@ -67,14 +67,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.setWallpaper(url: self.pickFile(), type: .web)
             
         case "在线网页":
-            if let str = AppleScript.inputUrl(),
-               let url = URL.init(string: str) {
-                guard url.scheme != nil else {
-                    return
+            let wc = TextInputWindowController.loadFromNib()
+            wc.showWindow(nil)
+            wc.confirmCallback = {
+                if let url = URL(string: $0) {
+                    self.setWallpaper(url: url, type: .web)
                 }
-                
-                self.setWallpaper(url: url, type: .web)
             }
+
             
         case "视频":
             self.setWallpaper(url: self.pickFile(), type: .video)
@@ -84,6 +84,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         case "退出":
             NSApp.terminate(nil)
+            
         default:
             break
         }
