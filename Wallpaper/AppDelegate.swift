@@ -16,6 +16,13 @@ enum WallpaperType: Int {
 // UserDefaults last record key
 let kLastWallpaper = "kLastWallpaper"
 
+
+class Window: NSWindow {
+    override var canBecomeKey: Bool { false }
+    override var canBecomeMain: Bool { false }
+    
+}
+
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
@@ -27,12 +34,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let mainScreen = NSScreen.main!
         let kCGDesktopWindowLevel = -2147483623
         
-        window = NSWindow(contentRect: mainScreen.frame, styleMask: [.borderless, .fullSizeContentView], backing: .buffered, defer: false)
+        window = Window(contentRect: mainScreen.frame, styleMask: [.borderless, .fullSizeContentView], backing: .buffered, defer: false)
         window.level = .init(kCGDesktopWindowLevel - 1)
         window.backgroundColor = .black
+        window.hasShadow = false
         window.isReleasedWhenClosed = false
-        window.makeKeyAndOrderFront(nil)
+        window.ignoresMouseEvents = true
+        window.orderFront(nil)
         
+        /// - 切换桌面时保持window也跟着切换
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if self.window.orderedIndex != 1 {
+                self.window.orderFront(nil)
+            }
+        }
         
         // -- StatusItem
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
