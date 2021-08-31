@@ -50,4 +50,9 @@ class VideoContentView: ContentView {
         self.player.replaceCurrentItem(with: .init(url: url))
     }
     
+    
+    override func layout() {
+        super.layout()
+        self.playerLayer.frame = self.bounds
+    }
 }

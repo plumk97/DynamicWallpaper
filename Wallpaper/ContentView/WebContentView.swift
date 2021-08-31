@@ -83,6 +83,11 @@ class WebContentView: ContentView {
             NSEvent.removeMonitor(obj)
         }
     }
+    
+    override func layout() {
+        super.layout()
+        self.webview.frame = self.bounds
+    }
 }
 
 // MARK: - WKNavigationDelegate

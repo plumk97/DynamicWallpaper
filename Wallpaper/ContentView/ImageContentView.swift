@@ -22,4 +22,8 @@ class ImageContentView: ContentView {
         self.imageView.image = NSImage(contentsOf: url)
     }
     
+    override func layout() {
+        super.layout()
+        self.imageView.frame = self.bounds
+    }
 }

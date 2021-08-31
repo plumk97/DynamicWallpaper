@@ -7,105 +7,51 @@
 
 import Cocoa
 
-enum WallpaperType: Int {
-    case web = 0
-    case image
-    case video
-}
-
 // UserDefaults last record key
 let kLastWallpaper = "kLastWallpaper"
-
-
-class Window: NSWindow {
-    override var canBecomeKey: Bool { false }
-    override var canBecomeMain: Bool { false }
-    
-}
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    var window: NSWindow!
-    var statusItem: NSStatusItem!
+    var model: WallpaperModel? {
+        didSet {
+            if oldValue != self.model {
+                self.wallpaperWindowDict.forEach({
+                    $0.value.reload(self.model)
+                })
+            }
+        }
+    }
+    
+    var preScreensHashValue: Int = 0
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-
-        let mainScreen = NSScreen.main!
-        let kCGDesktopWindowLevel = -2147483623
         
-        window = Window(contentRect: mainScreen.frame, styleMask: [.borderless, .fullSizeContentView], backing: .buffered, defer: false)
-        window.level = .init(kCGDesktopWindowLevel - 1)
-        window.backgroundColor = .black
-        window.hasShadow = false
-        window.isReleasedWhenClosed = false
-        window.ignoresMouseEvents = true
-        window.orderFront(nil)
+        self.createStatusMenuItem()
+        self.reloadWallpaperWindows()
         
-        /// - 切换桌面时保持window也跟着切换
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            if self.window.orderedIndex != 1 {
-                self.window.orderFront(nil)
+        self.reloadCache()
+        
+        /// - 监听screens 变化
+        self.preScreensHashValue = NSScreen.screens.hashValue
+        let observer = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, CFRunLoopActivity.afterWaiting.rawValue, true, 0) { _, _ in
+            let hashValue = NSScreen.screens.hashValue
+            if self.preScreensHashValue != hashValue {
+                self.preScreensHashValue = hashValue
+                self.reloadWallpaperWindows()
             }
         }
+        CFRunLoopAddObserver(CFRunLoopGetMain(), observer, .commonModes)
         
-        // -- StatusItem
-        self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        self.statusItem.button?.title = "Wallpaper"
-        
-        
-        let menu = NSMenu()
-        menu.addItem(.init(title: "本地网页", action: #selector(menuItemClick(_:)), keyEquivalent: ""))
-        menu.addItem(.init(title: "在线网页", action: #selector(menuItemClick(_:)), keyEquivalent: ""))
-        menu.addItem(.init(title: "视频", action: #selector(menuItemClick(_:)), keyEquivalent: ""))
-        menu.addItem(.init(title: "图片", action: #selector(menuItemClick(_:)), keyEquivalent: ""))
-        menu.addItem(.separator())
-        menu.addItem(.init(title: "退出", action: #selector(menuItemClick(_:)), keyEquivalent: "q"))
-        self.statusItem.menu = menu
-        
-        // -- read last record wallpaper
-        if let obj = UserDefaults.standard.object(forKey: kLastWallpaper) as? [String: Any] {
-            guard let typeIdx = obj["type"] as? Int,
-                  let type = WallpaperType(rawValue: typeIdx),
-                  let urlstr = obj["url"] as? String,
-                  let url = URL(string: urlstr) else {
-                return
-            }
-            self.setWallpaper(url: url, type: type)
+        /// - 监听界面改变
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil, queue: .main) { _ in
+            self.wallpaperWindowDict.forEach({
+                $0.value.orderFront(nil)
+            })
         }
     }
 
-    
-    @objc func menuItemClick(_ item: NSMenuItem) {
-        switch item.title {
-        case "本地网页":
-            self.setWallpaper(url: self.pickFile(), type: .web)
-            
-        case "在线网页":
-            let wc = TextInputWindowController.loadFromNib()
-            wc.showWindow(nil)
-            wc.confirmCallback = {
-                if let url = URL(string: $0) {
-                    self.setWallpaper(url: url, type: .web)
-                }
-            }
 
-            
-        case "视频":
-            self.setWallpaper(url: self.pickFile(), type: .video)
-            
-        case "图片":
-            self.setWallpaper(url: self.pickFile(), type: .image)
-
-        case "退出":
-            NSApp.terminate(nil)
-            
-        default:
-            break
-        }
-    }
-    
-    
     func pickFile() -> URL? {
         let op = NSOpenPanel()
         op.canChooseFiles = true
@@ -116,27 +62,108 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return nil
     }
     
-    func setWallpaper(url: URL?, type: WallpaperType) {
-        guard let url = url else {
+    // MARK: - StatusItem
+    var statusMenuItem: NSStatusItem!
+    
+    func createStatusMenuItem() {
+        
+        self.statusMenuItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        self.statusMenuItem.button?.title = "Wallpaper"
+
+
+        let menu = NSMenu()
+        menu.addItem(.init(title: "本地网页", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
+        menu.addItem(.init(title: "在线网页", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
+        menu.addItem(.init(title: "视频", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
+        menu.addItem(.init(title: "图片", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
+        menu.addItem(.separator())
+        menu.addItem(.init(title: "退出", action: #selector(statusMenuItemClick(_:)), keyEquivalent: "q"))
+        self.statusMenuItem.menu = menu
+    }
+    
+    @objc func statusMenuItemClick(_ item: NSMenuItem) {
+        
+        if item.title == "在线网页" {
+            let wc = TextInputWindowController.loadFromNib()
+            wc.showWindow(nil)
+            wc.confirmCallback = {
+                if let url = URL(string: $0) {
+                    self.model = WallpaperModel.init(type: .web, url: url)
+                    self.writeCache()
+                }
+            }
             return
         }
         
-        var contentView: ContentView!
-        switch type {
-        case .web:
-            contentView = WebContentView(frame: self.window.frame)
-        case .video:
-            contentView = VideoContentView(frame: self.window.frame)
-        case .image:
-            contentView = ImageContentView(frame: self.window.frame)
+        guard let url = pickFile() else {
+            return
         }
-        contentView.loadUrl(url)
-        self.window.contentView = contentView
         
-        // - save record
-        UserDefaults.standard.setValue(["url": url.absoluteString, "type": type.rawValue], forKey: kLastWallpaper)
+        switch item.title {
+        case "本地网页":
+            self.model = WallpaperModel.init(type: .web, url: url)
+            self.writeCache()
+            
+        case "视频":
+            self.model = WallpaperModel.init(type: .video, url: url)
+            self.writeCache()
+            
+        case "图片":
+            self.model = WallpaperModel.init(type: .image, url: url)
+            self.writeCache()
+            
+        case "退出":
+            NSApp.terminate(nil)
+
+        default:
+            break
+        }
+    }
+    
+    
+    // MARK: - WallpaperWindow
+    var wallpaperWindowDict = [AnyHashable: WallpaperWindow]()
+    
+    func reloadWallpaperWindows() {
+        
+        var releaseDict = self.wallpaperWindowDict
+        let screens = NSScreen.screens
+        for screen in screens {
+            releaseDict.removeValue(forKey: screen.hashValue)
+
+            var window = self.wallpaperWindowDict[screen.hashValue]
+            if window == nil {
+                window = WallpaperWindow(contentRect: .init(x: 0, y: 0, width: screen.frame.width, height: screen.frame.height), screen: screen)
+                window?.reload(self.model)
+                window?.backgroundColor = .clear
+                window?.orderFront(nil)
+
+                self.wallpaperWindowDict[screen] = window
+            }
+        }
+
+        for (key, _) in releaseDict {
+            self.wallpaperWindowDict.removeValue(forKey: key)?.orderOut(nil)
+        }
+    }
+    
+    // MARK: - Cache
+    func writeCache() {
+        
+        guard let model = self.model else {
+            return
+        }
+        
+        UserDefaults.standard.setValue(model.encode(), forKey: kLastWallpaper)
         UserDefaults.standard.synchronize()
     }
     
+    func reloadCache() {
+        
+        if let dict = UserDefaults.standard.object(forKey: kLastWallpaper) as? [String: Any] {
+            let model = WallpaperModel(dict: dict)
+            self.model = model
+        }
+        
+    }
 }
-
