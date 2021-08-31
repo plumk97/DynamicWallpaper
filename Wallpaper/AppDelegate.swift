@@ -77,8 +77,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(.init(title: "视频", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
         menu.addItem(.init(title: "图片", action: #selector(statusMenuItemClick(_:)), keyEquivalent: ""))
         menu.addItem(.separator())
-        menu.addItem(.init(title: "退出", action: #selector(statusMenuItemClick(_:)), keyEquivalent: "q"))
+        menu.addItem(.init(title: "退出", action: #selector(statusExitItemClick(_:)), keyEquivalent: "q"))
         self.statusMenuItem.menu = menu
+    }
+    
+    @objc func statusExitItemClick(_ item: NSMenuItem) {
+        NSApp.terminate(nil)
     }
     
     @objc func statusMenuItemClick(_ item: NSMenuItem) {
@@ -112,8 +116,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.model = WallpaperModel.init(type: .image, url: url)
             self.writeCache()
             
-        case "退出":
-            NSApp.terminate(nil)
 
         default:
             break
