@@ -22,6 +22,8 @@ class VideoContentView: ContentView {
         
         self.playerLayer = AVPlayerLayer(player: self.player)
         self.playerLayer.frame = self.bounds
+        self.playerLayer.contentsGravity = .resize
+        self.playerLayer.videoGravity = .resizeAspectFill
         self.layer?.addSublayer(self.playerLayer)
         
         self.player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
