@@ -42,12 +42,16 @@ class WebContentView: ContentView {
         self.webview.loadHTMLString("<!DOCTYPE html><html><head></head><body style='background-color: black'></body></html>", baseURL: nil)
         
         // -- Event
-        let screenBounds = NSScreen.main!.frame
         self.mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [
             .mouseMoved, .leftMouseDown, .leftMouseUp
         ]) {[unowned self] (event) in
+            guard let screen = self.window?.screen else {
+                return
+            }
+            
             var point = event.locationInWindow
-            point.y = screenBounds.height - point.y
+            point.y = screen.frame.height - point.y
+
             switch event.type {
             case .mouseMoved:
                 self.webview.evaluateJavaScript("wallpaper_mouseMoveEvent(\(point.x), \(point.y))")
@@ -59,13 +63,7 @@ class WebContentView: ContentView {
                 break
             }
         }
-    }
-    
-    private func enumSubViews(_ view: NSView ,callback: (NSView)->Void) {
-        for view1 in view.subviews {
-            callback(view1)
-            self.enumSubViews(view1, callback: callback)
-        }
+        
     }
     
     override func loadUrl(_ url: URL) {
