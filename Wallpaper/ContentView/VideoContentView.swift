@@ -48,6 +48,8 @@ fileprivate class VideoSharePlayer: NSObject {
         
         self.player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(screensDidSleepNotification), name: NSWorkspace.screensDidSleepNotification, object: nil)
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(screensDidWakeNotification), name: NSWorkspace.screensDidWakeNotification, object: nil)
     }
     
     @objc func playerItemDidPlayToEndTime() {
@@ -55,10 +57,17 @@ fileprivate class VideoSharePlayer: NSObject {
         self.player.play()
     }
     
+    @objc func screensDidSleepNotification() {
+        self.player.pause()
+    }
+    
+    @objc func screensDidWakeNotification() {
+        self.player.play()
+    }
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if self.player.status == .readyToPlay {
             self.player.play()
-
         }
     }
     
