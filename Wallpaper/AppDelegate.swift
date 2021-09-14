@@ -10,12 +10,16 @@ import Cocoa
 // UserDefaults last record key
 let kLastWallpaper = "kLastWallpaper"
 
+let WallpaperDidChangeNotification: Notification.Name = .init(rawValue: "WallpaperDidChangeNotification")
+
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var model: WallpaperModel? {
         didSet {
             if oldValue != self.model {
+                NotificationCenter.default.post(name: WallpaperDidChangeNotification, object: nil)
+                
                 self.wallpaperWindowDict.forEach({
                     $0.value.reload(self.model)
                 })
