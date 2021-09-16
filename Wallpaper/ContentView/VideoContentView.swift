@@ -39,16 +39,16 @@ class VideoContentView: ContentView {
 fileprivate class VideoSharePlayer: NSObject {
     static let shared = VideoSharePlayer()
     
-    let player = AVQueuePlayer()
+    let player = AVPlayer()
     private var url: URL?
     private override init() {
         super.init()
-        self.player.isMuted = true
         
-        self.player.actionAtItemEnd = .advance
+        self.player.isMuted = true
         self.player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemFailedToPlayToEndTime, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(wallpaperDidChangeNotification), name: WallpaperDidChangeNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(screensDidSleepNotification), name: NSWorkspace.screensDidSleepNotification, object: nil)
         NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(screensDidWakeNotification), name: NSWorkspace.screensDidWakeNotification, object: nil)
@@ -56,13 +56,8 @@ fileprivate class VideoSharePlayer: NSObject {
     }
     
     @objc func playerItemDidPlayToEndTime(_ noti: Notification) {
-        guard let item = noti.object as? AVPlayerItem else {
-            return
-        }
-        
-        self.player.remove(item)
-        item.seek(to: .zero, completionHandler: nil)
-        self.player.insert(item, after: nil)
+        self.player.seek(to: .zero, toleranceBefore: .indefinite, toleranceAfter: .indefinite)
+        self.player.play()
     }
     
     @objc func screensDidSleepNotification() {
@@ -75,7 +70,6 @@ fileprivate class VideoSharePlayer: NSObject {
     
     @objc func wallpaperDidChangeNotification() {
         self.player.pause()
-        self.player.removeAllItems()
         self.url = nil
     }
     
@@ -95,10 +89,7 @@ fileprivate class VideoSharePlayer: NSObject {
             }
             
             self.url = url
-            self.player.removeAllItems()
-            
-            self.player.insert(item, after: nil)
-            self.player.insert(.init(url: url), after: nil)
+            self.player.replaceCurrentItem(with: item)
             
             if self.player.status == .readyToPlay {
                 self.player.play()
