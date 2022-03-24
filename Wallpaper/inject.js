@@ -17,3 +17,12 @@ function wallpaper_mouseUpEvent(x, y) {
     event.initMouseEvent("mouseup", true, false, window, 1, x, y, x, y, false, false, false, false, 0, null)
     document.dispatchEvent(event)
 }
+
+// 某些网页会判断当前是否在当前界面
+document.hasFocus = function() {
+    return true
+}
+
+// 屏蔽WebAudio 音频
+AudioNode.prototype.connect = function(node) {
+}

@@ -8,7 +8,9 @@
 import Cocoa
 
 class Application: NSApplication {
-
+    
+    var desktopHandleWindowNumbers = Set<Int>()
+    
     let appDelegate = AppDelegate()
     override func run() {
         self.delegate = self.appDelegate
@@ -17,3 +19,5 @@ class Application: NSApplication {
     
     
 }
+
+let App = NSApp as! Application

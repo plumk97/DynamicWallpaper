@@ -26,14 +26,18 @@ class WebContentView: ContentView {
         super.commInit()
         let conf = WKWebViewConfiguration()
         conf.preferences.javaScriptCanOpenWindowsAutomatically = false
+        conf.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+        conf.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
         conf.allowsAirPlayForMediaPlayback = false
         conf.mediaTypesRequiringUserActionForPlayback = .all
+        
         
         if let path = Bundle.main.path(forResource: "inject", ofType: "js"), let str = try? String.init(contentsOfFile: path) {
             conf.userContentController.addUserScript(.init(source: str, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
         }
         
         self.webview = WebView(frame: self.bounds, configuration: conf)
+        
         self.webview.navigationDelegate = self
         self.webview.allowsBackForwardNavigationGestures = false
         self.webview.uiDelegate = self
@@ -45,13 +49,13 @@ class WebContentView: ContentView {
         self.mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [
             .mouseMoved, .leftMouseDown, .leftMouseUp
         ]) {[unowned self] (event) in
-            guard let screen = self.window?.screen else {
+            guard App.desktopHandleWindowNumbers.contains(event.windowNumber), let screen = self.window?.screen else {
                 return
             }
             
             var point = event.locationInWindow
-            point.y = screen.frame.height - point.y
-
+            point.y = screen.frame.maxY - point.y
+            point.x = point.x - screen.frame.minX
             switch event.type {
             case .mouseMoved:
                 self.webview.evaluateJavaScript("wallpaper_mouseMoveEvent(\(point.x), \(point.y))")
@@ -70,7 +74,8 @@ class WebContentView: ContentView {
         super.loadUrl(url)
         self.currentUrl = url
         if url.isFileURL {
-            self.webview.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+            let direcotry = url.deletingLastPathComponent().relativePath
+            self.webview.loadFileURL(url, allowingReadAccessTo: URL(fileURLWithPath: direcotry))
         } else {
             self.webview.load(.init(url: url))
         }

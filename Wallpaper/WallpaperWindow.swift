@@ -23,6 +23,18 @@ class WallpaperWindow: NSWindow {
         self.hasShadow = false
         self.isReleasedWhenClosed = false
         self.ignoresMouseEvents = true
+        
+        if let array = CGWindowListCopyWindowInfo([], 0) as? [[String: Any]] {
+            /// 桌面点击响应的window
+            let infos = array.filter({
+                $0["kCGWindowLayer"] as? Int == -2147483603
+            })
+            infos.forEach({
+                if let wn = $0["kCGWindowNumber"] as? Int {
+                    App.desktopHandleWindowNumbers.insert(wn)
+                }
+            })
+        }
     }
     
     deinit {
