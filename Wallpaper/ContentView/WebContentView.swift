@@ -18,38 +18,18 @@ class WebContentView: ContentView {
         }
     }
 
-    var webview: WKWebView!
+    var webview: WKWebView?
     
     private var currentUrl: URL?
     private var mouseMonitor: Any?
     override func commInit() {
         super.commInit()
-        let conf = WKWebViewConfiguration()
-        conf.preferences.javaScriptCanOpenWindowsAutomatically = false
-        conf.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-        conf.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
-        conf.allowsAirPlayForMediaPlayback = false
-        conf.mediaTypesRequiringUserActionForPlayback = .all
-        
-        
-        if let path = Bundle.main.path(forResource: "inject", ofType: "js"), let str = try? String.init(contentsOfFile: path) {
-            conf.userContentController.addUserScript(.init(source: str, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
-        }
-        
-        self.webview = WebView(frame: self.bounds, configuration: conf)
-        
-        self.webview.navigationDelegate = self
-        self.webview.allowsBackForwardNavigationGestures = false
-        self.webview.uiDelegate = self
-        self.addSubview(self.webview)
-        
-        self.webview.loadHTMLString("<!DOCTYPE html><html><head></head><body style='background-color: black'></body></html>", baseURL: nil)
         
         // -- Event
         self.mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [
             .mouseMoved, .leftMouseDown, .leftMouseUp
         ]) {[unowned self] (event) in
-            guard App.desktopHandleWindowNumbers.contains(event.windowNumber), let screen = self.window?.screen else {
+            guard let webview = self.webview, App.desktopHandleWindowNumbers.contains(event.windowNumber), let screen = self.window?.screen else {
                 return
             }
             
@@ -58,11 +38,11 @@ class WebContentView: ContentView {
             point.x = point.x - screen.frame.minX
             switch event.type {
             case .mouseMoved:
-                self.webview.evaluateJavaScript("wallpaper_mouseMoveEvent(\(point.x), \(point.y))")
+                webview.evaluateJavaScript("wallpaper_mouseMoveEvent(\(point.x), \(point.y))")
             case .leftMouseDown:
-                self.webview.evaluateJavaScript("wallpaper_mouseDownEvent(\(point.x), \(point.y))")
+                webview.evaluateJavaScript("wallpaper_mouseDownEvent(\(point.x), \(point.y))")
             case .leftMouseUp:
-                self.webview.evaluateJavaScript("wallpaper_mouseUpEvent(\(point.x), \(point.y))")
+                webview.evaluateJavaScript("wallpaper_mouseUpEvent(\(point.x), \(point.y))")
             default:
                 break
             }
@@ -70,14 +50,44 @@ class WebContentView: ContentView {
         
     }
     
+    func makeWebView(isLocalFile: Bool) {
+        self.webview?.removeFromSuperview()
+        self.webview = nil
+        
+        let conf = WKWebViewConfiguration()
+        conf.preferences.javaScriptCanOpenWindowsAutomatically = false
+        conf.allowsAirPlayForMediaPlayback = false
+        conf.mediaTypesRequiringUserActionForPlayback = .all
+        
+        if isLocalFile {
+            conf.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+            conf.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
+        }
+        if let path = Bundle.main.path(forResource: "inject", ofType: "js"), let str = try? String.init(contentsOfFile: path) {
+            conf.userContentController.addUserScript(.init(source: str, injectionTime: .atDocumentEnd, forMainFrameOnly: false))
+        }
+        
+        let webview = WebView(frame: self.bounds, configuration: conf)
+        
+        webview.navigationDelegate = self
+        webview.allowsBackForwardNavigationGestures = false
+        webview.uiDelegate = self
+        self.addSubview(webview)
+        
+//        webview.loadHTMLString("<!DOCTYPE html><html><head></head><body style='background-color: black'></body></html>", baseURL: nil)
+        self.webview = webview
+    }
+    
     override func loadUrl(_ url: URL) {
         super.loadUrl(url)
         self.currentUrl = url
         if url.isFileURL {
+            self.makeWebView(isLocalFile: true)
             let direcotry = url.deletingLastPathComponent().relativePath
-            self.webview.loadFileURL(url, allowingReadAccessTo: URL(fileURLWithPath: direcotry))
+            self.webview?.loadFileURL(url, allowingReadAccessTo: URL(fileURLWithPath: direcotry))
         } else {
-            self.webview.load(.init(url: url))
+            self.makeWebView(isLocalFile: false)
+            self.webview?.load(.init(url: url))
         }
     }
     
@@ -89,7 +99,7 @@ class WebContentView: ContentView {
     
     override func layout() {
         super.layout()
-        self.webview.frame = self.bounds
+        self.webview?.frame = self.bounds
     }
 }
 

@@ -19,7 +19,7 @@ class WallpaperWindow: NSWindow {
     
     private func setup() {
         
-        self.level = .init(Int(CGWindowLevelForKey(CGWindowLevelKey.desktopWindow)))
+        self.level = .init(Int(CGWindowLevelForKey(CGWindowLevelKey.desktopWindow)) - 1)
         self.hasShadow = false
         self.isReleasedWhenClosed = false
         self.ignoresMouseEvents = true
