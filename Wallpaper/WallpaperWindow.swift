@@ -9,17 +9,21 @@ import Cocoa
 
 class WallpaperWindow: NSWindow {
     
+    private var statusBarWindow: StatusBarWindow!
+    
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
     
     convenience init(contentRect: NSRect, screen: NSScreen) {
         self.init(contentRect: contentRect, styleMask: [.borderless, .fullSizeContentView], backing: .buffered, defer: false, screen: screen)
+        self.statusBarWindow = StatusBarWindow(screen: screen)
         self.setup()
     }
     
     private func setup() {
         
-        self.level = .init(Int(CGWindowLevelForKey(CGWindowLevelKey.desktopWindow)) - 1)
+        self.level = .init(Int(CGWindowLevelForKey(CGWindowLevelKey.desktopWindow)))
+        self.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         self.hasShadow = false
         self.isReleasedWhenClosed = false
         self.ignoresMouseEvents = true
@@ -35,6 +39,21 @@ class WallpaperWindow: NSWindow {
                 }
             })
         }
+    }
+    
+    override func orderFront(_ sender: Any?) {
+        super.orderFront(sender)
+        self.statusBarWindow.orderFront(sender)
+    }
+    
+    override func orderBack(_ sender: Any?) {
+        super.orderBack(sender)
+        self.statusBarWindow.orderBack(sender)
+    }
+    
+    override func orderOut(_ sender: Any?) {
+        super.orderOut(sender)
+        self.statusBarWindow.orderOut(sender)
     }
     
     deinit {

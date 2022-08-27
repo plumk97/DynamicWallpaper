@@ -55,7 +55,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-
+    
+    /// 选择文件
+    /// - Returns:
     func pickFile() -> URL? {
         let op = NSOpenPanel()
         op.canChooseFiles = true
@@ -142,7 +144,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 window = WallpaperWindow(contentRect: .init(x: 0, y: 0, width: screen.frame.width, height: screen.frame.height), screen: screen)
                 window?.reload(self.model)
                 window?.backgroundColor = .clear
-                window?.orderFront(nil)
+                window?.orderBack(nil)
 
                 self.wallpaperWindowDict[screen] = window
             }

@@ -86,15 +86,15 @@ class WebContentView: ContentView {
     
     override func loadUrl(_ url: URL) {
         super.loadUrl(url)
-        self.currentUrl = url
-        if url.isFileURL {
-            self.makeWebView(isLocalFile: true)
-            let direcotry = url.deletingLastPathComponent().relativePath
-            self.webview?.loadFileURL(url, allowingReadAccessTo: URL(fileURLWithPath: direcotry))
-        } else {
-            self.makeWebView(isLocalFile: false)
-            self.webview?.load(.init(url: url))
-        }
+//        self.currentUrl = url
+//        if url.isFileURL {
+//            self.makeWebView(isLocalFile: true)
+//            let direcotry = url.deletingLastPathComponent().relativePath
+//            self.webview?.loadFileURL(url, allowingReadAccessTo: URL(fileURLWithPath: direcotry))
+//        } else {
+//            self.makeWebView(isLocalFile: false)
+//            self.webview?.load(.init(url: url))
+//        }
     }
     
     deinit {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51D36D8228B9BCDD00984AC1 /* StatusBarWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D36D8128B9BCDD00984AC1 /* StatusBarWindow.swift */; };
 		98342F6926DDFEF300EE5BEB /* WallpaperModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98342F6826DDFEF300EE5BEB /* WallpaperModel.swift */; };
 		98A9A5C7263AF91400460F7C /* ImageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C3263AF91400460F7C /* ImageContentView.swift */; };
 		98A9A5C8263AF91400460F7C /* VideoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A9A5C4263AF91400460F7C /* VideoContentView.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		51D36D8128B9BCDD00984AC1 /* StatusBarWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarWindow.swift; sourceTree = "<group>"; };
 		98342F6826DDFEF300EE5BEB /* WallpaperModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperModel.swift; sourceTree = "<group>"; };
 		98A9A5C3263AF91400460F7C /* ImageContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageContentView.swift; sourceTree = "<group>"; };
 		98A9A5C4263AF91400460F7C /* VideoContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoContentView.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			children = (
 				FE94828F263577A5003FD3B3 /* Application.swift */,
 				FE94825926357645003FD3B3 /* AppDelegate.swift */,
+				51D36D8128B9BCDD00984AC1 /* StatusBarWindow.swift */,
 				98B71AA826DC84FF00915A3C /* WallpaperWindow.swift */,
 				98342F6826DDFEF300EE5BEB /* WallpaperModel.swift */,
 				98A9A5DE263B008600460F7C /* View */,
@@ -208,6 +211,7 @@
 				98A9A5D4263AF97800460F7C /* TextInputWindowController.swift in Sources */,
 				FE94825A26357645003FD3B3 /* AppDelegate.swift in Sources */,
 				98A9A5C7263AF91400460F7C /* ImageContentView.swift in Sources */,
+				51D36D8228B9BCDD00984AC1 /* StatusBarWindow.swift in Sources */,
 				98A9A5CE263AF94300460F7C /* WindowController.swift in Sources */,
 				98A9A5C8263AF91400460F7C /* VideoContentView.swift in Sources */,
 			);
