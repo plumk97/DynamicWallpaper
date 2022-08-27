@@ -27,7 +27,7 @@ class WebContentView: ContentView {
         
         // -- Event
         self.mouseMonitor = NSEvent.addGlobalMonitorForEvents(matching: [
-            .mouseMoved, .leftMouseDown, .leftMouseUp
+            .mouseMoved, .leftMouseDown, .leftMouseUp, .leftMouseDragged,
         ]) {[unowned self] (event) in
             guard let webview = self.webview, App.desktopHandleWindowNumbers.contains(event.windowNumber), let screen = self.window?.screen else {
                 return
@@ -38,11 +38,17 @@ class WebContentView: ContentView {
             point.x = point.x - screen.frame.minX
             switch event.type {
             case .mouseMoved:
-                webview.evaluateJavaScript("wallpaper_mouseMoveEvent(\(point.x), \(point.y))")
+                webview.mouseMoved(with: event)
+                
             case .leftMouseDown:
-                webview.evaluateJavaScript("wallpaper_mouseDownEvent(\(point.x), \(point.y))")
+                webview.mouseDown(with: event)
+                
             case .leftMouseUp:
-                webview.evaluateJavaScript("wallpaper_mouseUpEvent(\(point.x), \(point.y))")
+                webview.mouseUp(with: event)
+                
+            case .leftMouseDragged:
+                webview.mouseDragged(with: event)
+                
             default:
                 break
             }
