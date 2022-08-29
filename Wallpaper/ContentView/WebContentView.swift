@@ -33,21 +33,30 @@ class WebContentView: ContentView {
                 return
             }
             
+            guard screen.frame.contains(event.locationInWindow) else {
+                return
+            }
+            
             var point = event.locationInWindow
-            point.y = screen.frame.maxY - point.y
             point.x = point.x - screen.frame.minX
+            
+            guard let locEvent = NSEvent.mouseEvent(with: event.type, location: point, modifierFlags: event.modifierFlags, timestamp: event.timestamp, windowNumber: event.windowNumber, context: NSGraphicsContext.current, eventNumber: event.eventNumber, clickCount: event.clickCount, pressure: event.pressure) else {
+                return
+            }
+            
+            
             switch event.type {
             case .mouseMoved:
-                webview.mouseMoved(with: event)
+                webview.mouseMoved(with: locEvent)
                 
             case .leftMouseDown:
-                webview.mouseDown(with: event)
+                webview.mouseDown(with: locEvent)
                 
             case .leftMouseUp:
-                webview.mouseUp(with: event)
+                webview.mouseUp(with: locEvent)
                 
             case .leftMouseDragged:
-                webview.mouseDragged(with: event)
+                webview.mouseDragged(with: locEvent)
                 
             default:
                 break
